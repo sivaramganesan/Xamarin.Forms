@@ -3,15 +3,15 @@ using System.Collections.Generic;
 using System.Collections.Specialized;
 using System.ComponentModel;
 using System.Linq;
-using System.Reflection;
 using System.Runtime.CompilerServices;
 using System.Text;
 using System.Threading.Tasks;
+
 using Xamarin.Forms.Internals;
 
 namespace Xamarin.Forms
 {
-	[ContentProperty("Items")]
+	[ContentProperty(nameof(Items))]
 	public class Shell : Page, IShellController, IPropertyPropagationController
 	{
 		public static readonly BindableProperty BackButtonBehaviorProperty =
@@ -34,7 +34,8 @@ namespace Xamarin.Forms
 			BindableProperty.CreateAttached("TabBarIsVisible", typeof(bool), typeof(Shell), true);
 
 		public static readonly BindableProperty TitleViewProperty =
-			BindableProperty.CreateAttached("TitleView", typeof(View), typeof(Shell), null, propertyChanged: OnTitleViewChanged);
+			BindableProperty.CreateAttached("TitleView", typeof(View), typeof(Shell), null,
+				propertyChanged: OnTitleViewChanged);
 
 		public static BackButtonBehavior GetBackButtonBehavior(BindableObject obj) => (BackButtonBehavior)obj.GetValue(BackButtonBehaviorProperty);
 		public static void SetBackButtonBehavior(BindableObject obj, BackButtonBehavior behavior) => obj.SetValue(BackButtonBehaviorProperty, behavior);
@@ -159,9 +160,6 @@ namespace Xamarin.Forms
 
 		static readonly BindablePropertyKey ItemsPropertyKey = BindableProperty.CreateReadOnly(nameof(Items), typeof(ShellItemCollection), typeof(Shell), null,
 				defaultValueCreator: bo => new ShellItemCollection { Inner = new ElementCollection<ShellItem>(((Shell)bo).InternalChildren) });
-
-		static readonly BindablePropertyKey MenuItemsPropertyKey =
-			BindableProperty.CreateReadOnly(nameof(MenuItems), typeof(MenuItemCollection), typeof(Shell), null, defaultValueCreator: bo => new MenuItemCollection());
 
 		List<(IAppearanceObserver Observer, Element Pivot)> _appearanceObservers = new List<(IAppearanceObserver Observer, Element Pivot)>();
 		List<IFlyoutBehaviorObserver> _flyoutBehaviorObservers = new List<IFlyoutBehaviorObserver>();
@@ -511,12 +509,7 @@ namespace Xamarin.Forms
 
 		public static readonly BindableProperty ItemTemplateProperty =
 			BindableProperty.Create(nameof(ItemTemplate), typeof(DataTemplate), typeof(Shell), null, BindingMode.OneTime);
-
-		public static readonly BindableProperty MenuItemsProperty = MenuItemsPropertyKey.BindableProperty;
-
-		public static readonly BindableProperty MenuItemTemplateProperty =
-			BindableProperty.Create(nameof(MenuItemTemplate), typeof(DataTemplate), typeof(Shell), null, BindingMode.OneTime);
-
+			
 		ShellNavigatedEventArgs _accumulatedEvent;
 		bool _accumulateNavigatedEvents;
 		View _flyoutHeaderView;
@@ -585,13 +578,6 @@ namespace Xamarin.Forms
 		public DataTemplate ItemTemplate {
 			get => (DataTemplate)GetValue(ItemTemplateProperty);
 			set => SetValue(ItemTemplateProperty, value);
-		}
-
-		public MenuItemCollection MenuItems => (MenuItemCollection)GetValue(MenuItemsProperty);
-
-		public DataTemplate MenuItemTemplate {
-			get => (DataTemplate)GetValue(MenuItemTemplateProperty);
-			set => SetValue(MenuItemTemplateProperty, value);
 		}
 
 		public string Route {
@@ -678,8 +664,6 @@ namespace Xamarin.Forms
 			}
 
 			IncrementGroup();
-
-			currentGroup.AddRange(MenuItems);
 
 			return result;
 		}

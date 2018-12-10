@@ -153,16 +153,20 @@ namespace Xamarin.Forms.Platform.Android
 				case GridItemsLayout gridItemsLayout:
 					return CreateGridLayout(gridItemsLayout);
 				case ListItemsLayout listItemsLayout:
-					var orientation = listItemsLayout.Orientation == ItemsLayoutOrientation.Horizontal
-						? LinearLayoutManager.Horizontal
-						: LinearLayoutManager.Vertical;
-
-					return new LinearLayoutManager(Context, orientation, false);
+					return CreateListLayout(listItemsLayout);
 			}
 
 			// Fall back to plain old vertical list
 			// TODO hartez 2018/08/30 19:34:36 Log a warning when we have to fall back because of an unknown layout	
 			return new LinearLayoutManager(Context);
+		}
+
+		LayoutManager CreateListLayout(ListItemsLayout listItemsLayout)
+		{
+			return new LinearLayoutManager(Context, 
+				listItemsLayout.Orientation == ItemsLayoutOrientation.Horizontal
+									? LinearLayoutManager.Horizontal
+									: LinearLayoutManager.Vertical, false);
 		}
 
 		GridLayoutManager CreateGridLayout(GridItemsLayout gridItemsLayout)
@@ -267,6 +271,7 @@ namespace Xamarin.Forms.Platform.Android
 
 			_layout = newElement.ItemsLayout;
 			SetLayoutManager(SelectLayoutManager(_layout));
+
 			UpdateSnapBehavior();
 
 			// Keep track of the ItemsLayout's property changes

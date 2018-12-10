@@ -20,10 +20,10 @@
 
 						GalleryBuilder.NavButton("Filter Items", () => new FilterCollectionView(), Navigation),
 
-						GalleryBuilder.NavButton("Add/Remove Items (list)", () =>
+						GalleryBuilder.NavButton("Add/Remove Items (List)", () =>
 							new ObservableCodeCollectionViewGallery(grid: false), Navigation),
 
-						GalleryBuilder.NavButton("Add/Remove Items (grid)", () =>
+						GalleryBuilder.NavButton("Add/Remove Items (Grid)", () =>
 							new ObservableCodeCollectionViewGallery(), Navigation)
 					}
 				}

@@ -228,6 +228,7 @@ namespace Xamarin.Forms
 		}
 
 		void IElementController.SetValueFromRenderer(BindableProperty property, object value) => SetValueFromRenderer(property, value);
+
 		[EditorBrowsable(EditorBrowsableState.Never)]
 		public void SetValueFromRenderer(BindableProperty property, object value)
 		{

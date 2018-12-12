@@ -9,6 +9,10 @@
 
             <ProgressBar x:Name="progressBar" Margin="-10,-10,-10,0" />
 
+            <Button Image="bank" Text="Show Alert" Clicked="OnShowAlertClicked" />
+
+            <Button Image="bank" Text="Show Actions" Clicked="OnShowActionsClicked" />
+
             <Frame BackgroundColor="White" Padding="16">
                 <StackLayout Spacing="16">
                     <Image Source="photo.jpg"
@@ -44,8 +48,6 @@
                     <Button Image="bank" Text="more" HorizontalOptions="End" BackgroundColor="Red" />
                 </StackLayout>
             </Frame>
-
-            <Button Image="bank" Text="Show Alert" Clicked="OnShowAlertClicked" />
 
             <!--
             TODO: this text box is basically invisible

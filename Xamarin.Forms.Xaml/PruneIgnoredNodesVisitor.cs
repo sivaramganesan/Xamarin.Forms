@@ -5,10 +5,13 @@ namespace Xamarin.Forms.Xaml
 {
 	class PruneIgnoredNodesVisitor : IXamlNodeVisitor
 	{
+		public PruneIgnoredNodesVisitor(bool useDesignProperties = false) => UseDesignProperties = useDesignProperties;
+
 		public TreeVisitingMode VisitingMode => TreeVisitingMode.TopDown;
 		public bool StopOnDataTemplate => false;
 		public bool StopOnResourceDictionary => false;
 		public bool VisitNodeOnDataTemplate => true;
+		public bool UseDesignProperties { get; }
 		public bool SkipChildren(INode node, INode parentNode) => false;
 		public bool IsResourceDictionary(ElementNode node) => false;
 
@@ -17,12 +20,21 @@ namespace Xamarin.Forms.Xaml
 			foreach (var propertyKvp in node.Properties)
 			{
 				var propertyName = propertyKvp.Key;
-				var propertyValue = (propertyKvp.Value as ValueNode)?.Value as string;
-				if (propertyValue == null)
+				if (!((propertyKvp.Value as ValueNode)?.Value is string propertyValue))
 					continue;
 				if (!propertyName.Equals(XamlParser.McUri, "Ignorable"))
 					continue;
-				(parentNode.IgnorablePrefixes ?? (parentNode.IgnorablePrefixes = new List<string>())).AddRange(propertyValue.Split(','));
+				var prefixes = propertyValue.Split(',').ToList();
+				if (UseDesignProperties) {//if we're in design mode for this file
+					var prefixIndexToRemove = -1;
+					for (var i = 0; i < prefixes.Count; i++)
+						if (node.NamespaceResolver.LookupNamespace(prefixes[i]) == XamlParser.XFDesignUri)
+							prefixIndexToRemove = i;
+					if (prefixIndexToRemove != -1)
+						prefixes.RemoveAt(prefixIndexToRemove);
+				}
+
+				(parentNode.IgnorablePrefixes ?? (parentNode.IgnorablePrefixes = new List<string>())).AddRange(prefixes);
 			}
 
 			foreach (var propertyKvp in node.Properties.ToList())
